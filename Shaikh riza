@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calm Mind - Anxiety & Depression Relief</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+body{background:#e0f7ff;color:#333;line-height:1.6;overflow-x:hidden;}
+.container{max-width:1000px;margin:0 auto;padding:20px;}
+h1,h2,h3{text-align:center;margin-bottom:10px;}
+button{cursor:pointer;border:none;border-radius:5px;padding:8px 15px;background:#4da6ff;color:white;transition:0.3s;}
+button:hover{background:#3399ff;}
+input,textarea,select{padding:8px;border-radius:5px;border:1px solid #ccc;width:100%;margin:5px 0;}
+section{margin:40px 0;padding:20px;background:#f0f8ff;border-radius:10px;box-shadow:0 4px 8px rgba(0,0,0,0.1);}
+
+/* Mood Tracker */
+#moodTracker select{width:auto;display:inline-block;}
+#moodChart{max-width:600px;margin:20px auto;}
+
+/* Breathing */
+#breathing .circle{width:150px;height:150px;margin:20px auto;border-radius:50%;background:#4da6ff;display:flex;align-items:center;justify-content:center;color:white;font-size:20px;text-align:center;transition:all 4s ease-in-out;}
+#breathing p{font-weight:bold;}
+
+/* Journal */
+#journal textarea{height:100px;resize:none;}
+#journalEntries{margin-top:10px;}
+
+/* Chat/Support */
+#chatMessages{height:250px;overflow-y:auto;background:#d9f0ff;padding:10px;border-radius:5px;margin-bottom:10px;}
+.chat-msg{margin:5px 0;padding:5px;border-radius:5px;max-width:80%;}
+.user-msg{background:#3399ff;color:white;text-align:right;margin-left:auto;}
+.bot-msg{background:#cce6ff;text-align:left;margin-right:auto;}
+
+/* Tips */
+#tips ul{list-style-type:circle;padding-left:20px;}
+
+/* Resources */
+#resources ul{list-style-type:disc;padding-left:20px;}
+
+/* Quote Slider */
+#quoteSlider{margin:20px auto;text-align:center;font-style:italic;font-weight:500;color:#0059b3;}
+
+/* Playlist */
+#playlist{margin:10px auto;text-align:center;}
+#playlist select{padding:6px;border-radius:5px;border:1px solid #ccc;}
+
+/* Responsive */
+@media(max-width:768px){.container{padding:10px;}#breathing .circle{width:120px;height:120px;font-size:16px;}}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>🌊 Calm Mind</h1>
+  <p style="text-align:center;">Your space for anxiety & depression relief 💙</p>
+
+  <!-- Quote Slider -->
+  <div id="quoteSlider">“Take a deep breath and let go of what you can't control.”</div>
+
+  <!-- Mood Tracker -->
+  <section id="moodTracker">
+    <h2>Mood Tracker</h2>
+    <p>Select your mood:</p>
+    <select id="moodSelect">
+      <option value="5">Very Happy</option>
+      <option value="4">Happy</option>
+      <option value="3">Neutral</option>
+      <option value="2">Sad</option>
+      <option value="1">Very Sad</option>
+    </select>
+    <button onclick="addMood()">Add Mood</button>
+    <canvas id="moodChart"></canvas>
+  </section>
+
+  <!-- Breathing -->
+  <section id="breathing">
+    <h2>Breathing Exercise</h2>
+    <p>Follow the circle and breathe</p>
+    <div class="circle" id="circle">Ready</div>
+    <button onclick="startBreathing()">Start Exercise</button>
+  </section>
+
+  <!-- Journal -->
+  <section id="journal">
+    <h2>Daily Journal</h2>
+    <textarea id="journalText" placeholder="Write your thoughts here..."></textarea>
+    <button onclick="saveJournal()">Save Entry</button>
+    <button onclick="exportJournal()">Download as .txt</button>
+    <div id="journalEntries"></div>
+  </section>
+
+  <!-- Chat / Support -->
+  <section id="chat">
+    <h2>Chat Support</h2>
+    <div id="chatMessages"></div>
+    <input type="text" id="chatInput" placeholder="What are you feeling today?" />
+    <button onclick="sendMessage()">Send</button>
+  </section>
+
+  <!-- Tips & Articles -->
+  <section id="tips">
+    <h2>Quick Tips</h2>
+    <ul>
+      <li>Take deep breaths for 5 minutes daily</li>
+      <li>Stay hydrated and eat healthy</li>
+      <li>Go for a walk or light exercise</li>
+      <li>Maintain a regular sleep schedule</li>
+      <li>Write down your thoughts in a journal</li>
+    </ul>
+  </section>
+
+  <!-- Resources & Helpline -->
+  <section id="resources">
+    <h2>Resources & Helpline</h2>
+    <ul>
+      <li>National Helpline: 1800-123-4567</li>
+      <li><a href="https://www.mentalhealth.gov" target="_blank">MentalHealth.gov</a></li>
+      <li><a href="https://www.nimh.nih.gov" target="_blank">NIMH</a></li>
+      <li>Therapy Apps: BetterHelp, Talkspace</li>
+    </ul>
+  </section>
+
+  <!-- Meditation Music Playlist -->
+  <section id="playlist">
+    <h2>Meditation Music</h2>
+    <select id="musicSelect" onchange="changeMusic()">
+      <option value="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3">Calm Piano</option>
+      <option value="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3">Soft Ambient</option>
+      <option value="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3">Ocean Waves</option>
+      <option value="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3">Relaxing Guitar</option>
+    </select>
+    <audio id="audioPlayer" controls style="display:block;margin:10px auto;">
+      <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" type="audio/mpeg">
+      Your browser does not support the audio element.
+    </audio>
+  </section>
+</div>
+
+<script>
+/* --- Quote Slider --- */
+const quotes = [
+  "“Take a deep breath and let go of what you can't control.”",
+  "“You are stronger than you think.”",
+  "“This too shall pass.”",
+  "“One small step is progress.”",
+  "“Be gentle with yourself.”"
+];
+let qIndex = 0;
+setInterval(()=>{
+  qIndex = (qIndex + 1) % quotes.length;
+  document.getElementById('quoteSlider').textContent = quotes[qIndex];
+},5000);
+
+/* --- Mood Tracker --- */
+let moods = JSON.parse(localStorage.getItem('moods')) || [];
+let labels = JSON.parse(localStorage.getItem('labels')) || [];
+const ctx = document.getElementById('moodChart').getContext('2d');
+const moodChart = new Chart(ctx, {
+  type:'line',
+  data:{labels:labels,datasets:[{label:'Mood Level',data:moods,borderColor:'#3399ff',fill:false,tension:0.3}]},
+  options:{scales:{y:{min:0,max:5,ticks:{stepSize:1}}}}
+});
+function addMood(){
+  const moodVal = parseInt(document.getElementById('moodSelect').value);
+  const today = new Date().toLocaleDateString();
+  moods.push(moodVal); labels.push(today);
+  localStorage.setItem('moods', JSON.stringify(moods));
+  localStorage.setItem('labels', JSON.stringify(labels));
+  moodChart.update();
+}
+
+/* --- Breathing Exercise --- */
+function startBreathing(){
+  const circle = document.getElementById('circle');
+  const steps = [
+    {text:"Inhale 🌬",scale:1.5,duration:4000},
+    {text:"Hold 🤲",scale:1.5,duration:4000},
+    {text:"Exhale 💨",scale:1,duration:4000},
+    {text:"Hold 🤲",scale:1,duration:4000}
+  ];
+  let i=0;
+  function nextStep(){
+    circle.textContent = steps[i].text;
+    circle.style.transform = `scale(${steps[i].scale})`;
+    const duration = steps[i].duration;
+    i = (i+1)%steps.length;
+    setTimeout(nextStep,duration);
+  }
+  nextStep();
+}
+
+/* --- Journal --- */
+function saveJournal(){
+  const text = document.getElementById('journalText').value;
+  if(text.trim()===''){alert('Write something first!'); return;}
+  const div = document.createElement('div');
+  div.textContent = text; div.style.padding='5px'; div.style.borderBottom='1px solid #ccc';
+  document.getElementById('journalEntries').prepend(div);
+  document.getElementById('journalText').value='';
+}
+function exportJournal(){
+  const text = document.getElementById('journalText').value;
+  if(text.trim()===''){alert('Write something first!'); return;}
+  const blob = new Blob([text], {type: 'text/plain'});
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = 'journal.txt';
+  link.click();
+}
+
+/* --- Chat Support --- */
+const chatMessages = document.getElementById('chatMessages');
+function sendMessage(){
+  const input = document.getElementById('chatInput');
+  const msg = input.value.trim();
+  if(msg===''){return;}
+  const userDiv = document.createElement('div'); userDiv.className='chat-msg user-msg'; userDiv.textContent=msg;
+  chatMessages.appendChild(userDiv);
+  input.value=''; chatMessages.scrollTop = chatMessages.scrollHeight;
+
+  setTimeout(()=>{
+    const botDiv = document.createElement('div'); botDiv.className='chat-msg bot-msg';
+    const lowerMsg = msg.toLowerCase();
+    if(lowerMsg.includes('sad') || lowerMsg.includes('depress')){
+      botDiv.textContent="I understand that you're feeling down 💙 It's okay to feel this way. Every emotion is temporary. Take a slow breath, write your thoughts in your journal, and know that small steps can bring comfort. You're not alone and stronger than you think. Reach out if you need help.";
+      addMoodEntry(2);
+    } else if(lowerMsg.includes('anxious') || lowerMsg.includes('nervous') || lowerMsg.includes('stress')){
+      botDiv.textContent="Feeling anxious is tough 🌊 Try deep, slow breaths and focus on the present. You’ve handled challenges before and can handle this too. Maybe do a short meditation or listen to calming music. Take care of yourself; you deserve peace.";
+      addMoodEntry(3);
+    } else if(lowerMsg.includes('happy') || lowerMsg.includes('good') || lowerMsg.includes('great')){
+      botDiv.textContent="That's wonderful to hear 😄 Keep embracing these positive moments and maybe jot down what made you happy today. Happiness grows when we appreciate it.";
+      addMoodEntry(5);
+    } else{
+      botDiv.textContent="Thanks for sharing! Acknowledge your feelings 🌸 Remember to take care of yourself and do something kind for yourself today.";
+      addMoodEntry(4);
+    }
+    chatMessages.appendChild(botDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  },1000);
+}
+function addMoodEntry(value){
+  const today = new Date().toLocaleDateString();
+  moods.push(value); labels.push(today);
+  localStorage.setItem('moods', JSON.stringify(moods));
+  localStorage.setItem('labels', JSON.stringify(labels));
+  moodChart.update();
+}
+
+/* --- Music Playlist --- */
+function changeMusic(){
+  const player = document.getElementById('audioPlayer');
+  const select = document.getElementById('musicSelect');
+  player.src = select.value;
+  player.play();
+}
+</script>
+</body>
+</html>
